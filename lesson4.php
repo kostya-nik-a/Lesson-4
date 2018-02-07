@@ -1,9 +1,11 @@
 <?php
 
-$url = 'http://api.openweathermap.org/data/2.5/weather?q=Novosibirsk,ru&APPID=77f3d66a745888c1a1116ab10c3d8a6e';
+$idcity = 'Novosibirsk';//1496747;
+$idapp = '77f3d66a745888c1a1116ab10c3d8a6e';
+$url = "http://api.openweathermap.org/data/2.5/weather?q=$idcity,ru&APPID=$idapp";
 $cashFile = 'temp.txt';
 
-if (filemtime($cashFile) < date ('F d Y H:i:s')) {
+if (!file_exists($cashFile) or date ('F d Y H:i:s') > filemtime($cashFile)) {
     $contents = file_get_contents($url);
     $tempFile = fopen($cashFile, 'w');
     fwrite($tempFile, $contents);
@@ -11,8 +13,8 @@ if (filemtime($cashFile) < date ('F d Y H:i:s')) {
     echo 'С сайта';
 }
 else {
-	$contents = file_get_contents($cashFile);
-echo 'Кэш:';
+    $contents = file_get_contents($cashFile);
+    echo 'Кэш:';
 }
 
 $result = json_decode($contents, true);
@@ -31,6 +33,7 @@ $date = date('d.m.Y', $result ['dt']);
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,11 +43,10 @@ $date = date('d.m.Y', $result ['dt']);
 
 <body>
 	<div>
-	<h1 style="margin: 0;">Today <?= $date ?> weather in <?= $city.' '. $desc ?> </h1>
-    <img style="display: inline-block;" src="https://openweathermap.org/img/w/<?= $icon ?>.png" alt="image">
-    <p style="display: inline-block; margin: auto;"><?= $temperature ?></p>
-    <p>Pressure: <?= $pressure ?> pha</p>
-    <p>Wind: <?= $wind ?> m/sec</p>
+	<h1 style="margin: 0;">Today <?= $date ?> weather in <?= $city.' is '. $desc ?> </h1>
+    <img style="display: inline-block; margin:0;" src="https://openweathermap.org/img/w/<?= $icon ?>.png" alt="image">
+    <p style="display: inline-block; margin:0;"><?= $temperature ?>&deg;C</p>
+    <p>Pressure: <?= $pressure ?> pha<br>Wind: <?= $wind ?> m/sec</p>
   </div>
 </body>
 </html>
